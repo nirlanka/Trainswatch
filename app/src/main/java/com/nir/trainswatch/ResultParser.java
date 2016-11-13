@@ -31,7 +31,7 @@ public class ResultParser extends AsyncTask<String, Void, ArrayList<Train>> {
 //        try {
 //            Document doc = Jsoup.connect(strings[0]).get();
 //            Elements rows = doc.select("div.table-responsive table.table > tbody > tr");
-//            // TODO: receive SearchResults object and fill it
+//            // TODO: receive result list of Train object and fill it
 //            trains = new ArrayList<Train>();
 //            if (rows!=null && rows.size()>0) {
 //                for (int i=0; i<rows.size(); i++) {

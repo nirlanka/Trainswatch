@@ -46,9 +46,6 @@ public class SearchActivity extends AppCompatActivity {
         if (activenetw != null && activenetw.isConnectedOrConnecting()) {
             // TODO: handle connectivity-process buffering in UX
             Toast.makeText(SearchActivity.context, "Processing...", Toast.LENGTH_SHORT).show();
-            SearchResults results = new SearchResults();
-            results.start = txtStart.getText().toString();
-            results.end = txtEnd.getText().toString();
 //            String url =
 //                    "http://www.eservices.railway.gov.lk/schedule/searchTrain.action?selectedLocale=en"
 //                            +"&searchCriteria.startStationID="+ GovAdapterData.stationIds.get(results.start)
@@ -57,7 +54,7 @@ public class SearchActivity extends AppCompatActivity {
 //                            +"&searchCriteria.endTime=-1"
 //                            +"&searchDate=";
 //            (new ResultParser(new ResultsActivity(), context)).execute(new String[]{url});
-            (new ResultParser(this, context)).execute(new String[]{results.start, results.end});
+            (new ResultParser(this, context)).execute(new String[]{txtStart.getText().toString(), txtEnd.getText().toString()});
         } else {
             // TODO: handle lack of internet in UX
             Toast.makeText(SearchActivity.context, "Please connect to the Internet.", Toast.LENGTH_SHORT).show();
