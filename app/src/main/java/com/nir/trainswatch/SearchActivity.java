@@ -9,12 +9,13 @@ import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
-import android.widget.TextView;
 import android.widget.Toast;
 
 
 public class SearchActivity extends AppCompatActivity {
     protected static Context context;
+    AutoCompleteTextView txtStart, txtEnd;
+    Button btnSearch;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -23,45 +24,43 @@ public class SearchActivity extends AppCompatActivity {
 
         context = getApplicationContext();
 
-        Button btnSearch = (Button) findViewById(R.id.btnSearch);
-        final AutoCompleteTextView txtStart = (AutoCompleteTextView) findViewById(R.id.txtStart);
-        final AutoCompleteTextView txtEnd = (AutoCompleteTextView) findViewById(R.id.txtEnd);
+        btnSearch = (Button) findViewById(R.id.btnSearch);
+        txtStart = (AutoCompleteTextView) findViewById(R.id.txtStart);
+        txtEnd = (AutoCompleteTextView) findViewById(R.id.txtEnd);
 
         // TODO: move this data to SQLite if that'd be better
-        if (Data.stationIds == null || Data.stationIds.isEmpty()) {
-            Data.fillStationIds();
+        if (GovAdapterData.stationIds == null || GovAdapterData.stationIds.isEmpty()) {
+            GovAdapterData.fillStationIds();
         }
         // TODO: attach all keys of stations to two dropdowns
-        String[] stations = Data.stationNames;
+        String[] stations = GovAdapterData.stationNames;
         ArrayAdapter<String> stationListAdapter = new ArrayAdapter<String>(this, R.layout.dropdown_station, stations);
         txtStart.setAdapter(stationListAdapter);
         txtEnd.setAdapter(stationListAdapter);
+    }
 
-        btnSearch.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                ConnectivityManager conmgr = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
-                NetworkInfo activenetw = conmgr.getActiveNetworkInfo();
-                // TODO: handle input validations
-                if (activenetw != null && activenetw.isConnectedOrConnecting()) {
-                    // TODO: handle connectivity-process buffering in UX
-                    Toast.makeText(SearchActivity.context, "Processing...", Toast.LENGTH_SHORT).show();
-                    SearchResults results = new SearchResults();
-                    results.start = txtStart.getText().toString();
-                    results.end = txtEnd.getText().toString();
-                    String url =
-                            "http://www.eservices.railway.gov.lk/schedule/searchTrain.action?selectedLocale=en"
-                                    +"&searchCriteria.startStationID="+Data.stationIds.get(results.start)
-                                    +"&searchCriteria.endStationID="+Data.stationIds.get(results.end)
-                                    +"&searchCriteria.startTime=-1"
-                                    +"&searchCriteria.endTime=-1"
-                                    +"&searchDate=";
-                    (new ResultParser()).execute(new String[]{url});
-                } else {
-                    // TODO: handle lack of internet in UX
-                    Toast.makeText(SearchActivity.context, "Please connect to the Internet.", Toast.LENGTH_SHORT).show();
-                }
-            }
-        });
+    public void getSearchResults(View view){
+        ConnectivityManager conmgr = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activenetw = conmgr.getActiveNetworkInfo();
+        // TODO: handle input validations
+        if (activenetw != null && activenetw.isConnectedOrConnecting()) {
+            // TODO: handle connectivity-process buffering in UX
+            Toast.makeText(SearchActivity.context, "Processing...", Toast.LENGTH_SHORT).show();
+            SearchResults results = new SearchResults();
+            results.start = txtStart.getText().toString();
+            results.end = txtEnd.getText().toString();
+//            String url =
+//                    "http://www.eservices.railway.gov.lk/schedule/searchTrain.action?selectedLocale=en"
+//                            +"&searchCriteria.startStationID="+ GovAdapterData.stationIds.get(results.start)
+//                            +"&searchCriteria.endStationID="+ GovAdapterData.stationIds.get(results.end)
+//                            +"&searchCriteria.startTime=-1"
+//                            +"&searchCriteria.endTime=-1"
+//                            +"&searchDate=";
+//            (new ResultParser(new ResultsActivity(), context)).execute(new String[]{url});
+            (new ResultParser(this, context)).execute(new String[]{results.start, results.end});
+        } else {
+            // TODO: handle lack of internet in UX
+            Toast.makeText(SearchActivity.context, "Please connect to the Internet.", Toast.LENGTH_SHORT).show();
+        }
     }
 }

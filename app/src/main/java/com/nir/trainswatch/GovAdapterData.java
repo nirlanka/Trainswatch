@@ -7,7 +7,7 @@ import java.util.Set;
  * Created by Nirmal on 11/8/2016.
  */
 
-public class Data {
+public class GovAdapterData {
     protected static HashMap<String, Integer> stationIds;
     protected static String[] stationNames;
 
